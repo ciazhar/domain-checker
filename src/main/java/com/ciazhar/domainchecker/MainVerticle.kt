@@ -6,7 +6,7 @@ class MainVerticle : AbstractVerticle() {
 
     override fun start() {
 
-        print(DomainChecker.check("google.com"))
+        DomainChecker.check("youngontop.com")
 
     }
 }
