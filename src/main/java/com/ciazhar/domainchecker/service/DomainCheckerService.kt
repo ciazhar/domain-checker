@@ -5,5 +5,5 @@ package com.ciazhar.domainchecker.service
  * [ Documentatiion Here ]
  */
 interface DomainCheckerService {
-    fun checkDomain(domain : String) : Boolean
+    fun checkDomain(domain : String, dnsbl : String) : Boolean
 }
