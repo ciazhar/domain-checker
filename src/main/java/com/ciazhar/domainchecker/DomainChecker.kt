@@ -2,6 +2,7 @@ package com.ciazhar.domainchecker
 
 
 import com.ciazhar.domainchecker.service.DomainCheckerServiceImpl
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by ciazhar on 05/02/18.
@@ -14,26 +15,31 @@ object DomainChecker {
     fun check(domain : String){
 
         val dnsblList = listOf(
-                "blackholes.five-ten-sg.com",
-                "bl.mailspike.net",
-                "bl.spamcop.net",
-                "bl.emailbasura.org",
+                "aspews.ext.sorbs.net",
                 "b.barracudacentral.org",
-                "bl.spamcannibal.org",
+                "bad.psky.me",
                 "bl.deadbeef.com",
-                "bl.spameatingmonkey.net",
+                "bl.emailbasura.org",
+                "bl.mailspike.net",
                 "bl.score.senderscore.com",
-                "cdl.anti-spam.org.cn",
-                "dnsbl-3.uceprotect.net",
-                "dnsbl-1.uceprotect.net",
-                "dnsbl.inps.de",
-                "combined.rbl.msrbl.net",
-                "combined.abuse.ch",
-                "dnsbl-2.uceprotect.net",
-                "cbl.abuseat.org",
-                "db.wpbl.info",
-                "bogons.cymru.com",
+                "bl.spamcannibal.org",
+                "bl.spameatingmonkey.net",
+                "bl.spamcop.net",
+                "blackholes.five-ten-sg.com",
                 "blacklist.woody.ch",
+                "bogons.cymru.com",
+                "cbl.abuseat.org",
+                "cdl.anti-spam.org.cn",
+                "combined.abuse.ch",
+                "combined.rbl.msrbl.net",
+                "db.wpbl.info",
+                "dnsbl-1.uceprotect.net",
+                "dnsbl-2.uceprotect.net",
+                "dnsbl-3.uceprotect.net",
+                "dnsbl.ahbl.org",
+                "dnsbl.cyberlogic.net",
+                "dnsbl.inps.de",
+                "dnsbl.njabl.org",
                 "dnsbl.sorbs.net",
                 "drone.abuse.ch",
                 "duinv.aupads.org",
@@ -44,7 +50,7 @@ object DomainChecker {
                 "http.dnsbl.sorbs.net",
                 "images.rbl.msrbl.net",
                 "ips.backscatterer.org",
-                "ix.dnsbl.manitu.net,",
+                "ix.dnsbl.manitu.net",
                 "korea.services.net",
                 "misc.dnsbl.sorbs.net",
                 "noptr.spamrats.com",
@@ -52,51 +58,61 @@ object DomainChecker {
                 "omrs.dnsbl.net.au",
                 "orvedb.aupads.org",
                 "osps.dnsbl.net.au",
+                "osrs.dnsbl.net.au",
                 "owfs.dnsbl.net.au",
-                "pbl.spamhaus.org",
                 "owps.dnsbl.net.au",
-                "probes.dnsbl.net.au",
+                "pbl.spamhaus.org",
                 "phishing.rbl.msrbl.net",
+                "probes.dnsbl.net.au",
+                "proxy.bl.gweep.ca",
                 "proxy.block.transip.nl",
                 "psbl.surriel.com",
-                "proxy.bl.gweep.ca",
-                "rdts.dnsbl.net.au",
                 "rbl.interserver.net",
+                "rdts.dnsbl.net.au",
                 "relays.bl.gweep.ca",
-                "relays.nether.net",
-                "ricn.dnsbl.net.au",
                 "relays.bl.kundenserver.de",
+                "relays.nether.net",
                 "residential.block.transip.nl",
-                "sbl.spamhaus.org",
-                "spam.abuse.ch",
+                "ricn.dnsbl.net.au",
                 "rmst.dnsbl.net.au",
+                "sbl.spamhaus.org",
                 "short.rbl.jp",
                 "smtp.dnsbl.sorbs.net",
                 "socks.dnsbl.sorbs.net",
+                "spam.abuse.ch",
                 "spam.dnsbl.sorbs.net",
                 "spam.rbl.msrbl.net",
                 "spam.spamrats.com",
+                "spamlist.or.kr",
                 "spamrbl.imp.ch",
-                "tor.dnsbl.sectoor.de",
                 "t3direct.dnsbl.net.au",
+                "tor.ahbl.org",
+                "tor.dnsbl.sectoor.de",
                 "torserver.tor.dnsbl.sectoor.de",
                 "ubl.lashback.com",
                 "ubl.unsubscore.com",
-                "virus.rbl.jp",
                 "virbl.bit.nl",
+                "virus.rbl.jp",
+                "virus.rbl.msrbl.net",
+                "web.dnsbl.sorbs.net",
+                "wormrbl.imp.ch",
                 "xbl.spamhaus.org",
-                "zen.spamhaus.org"
+                "zen.spamhaus.org",
+                "zombie.dnsbl.sorbs.net"
         )
 
-        val blockedList = mutableListOf<String>()
 
-        dnsblList.forEach {
-            when(service.checkDomain(domain,it)){
-                true -> blockedList.add(it)
+        /// Cara 1 : Makan waktu sampe 1 menit 30 detik
+        CompletableFuture.runAsync {
+
+            println("Initializing ...")
+            println("Start Checking Domain ...")
+            dnsblList.forEach {
+                when(service.checkDomain(domain,it)){
+                    true -> println("$domain is blocked by $it")
+                }
             }
-        }
-        return blockedList.forEach {
-            print("$domain is blocked by $it\n")
+            println("Done !")
         }
 
     }
