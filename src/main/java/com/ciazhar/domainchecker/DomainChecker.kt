@@ -101,7 +101,8 @@ object DomainChecker {
                 "zombie.dnsbl.sorbs.net"
         )
 
-        println("Start Checking Domain ...")
+        println("Start Checking $domain ...")
+        println("Please wait for some seconds ...")
         dnsblList.forEach {
             CompletableFuture.runAsync {
                 when(service.checkDomain(domain,it)){
@@ -110,7 +111,7 @@ object DomainChecker {
             }
         }
         CompletableFuture.runAsync {
-            print("Done !")
+            println("Done !")
         }
     }
 
