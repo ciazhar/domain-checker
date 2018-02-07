@@ -101,29 +101,17 @@ object DomainChecker {
                 "zombie.dnsbl.sorbs.net"
         )
 
-
-        /// Cara 1 : Makan waktu sampe 1 menit 30 detik
-        CompletableFuture.runAsync {
-
-            println("Initializing ...")
-            println("Start Checking Domain ...")
-            dnsblList.forEach {
+        println("Start Checking Domain ...")
+        dnsblList.forEach {
+            CompletableFuture.runAsync {
                 when(service.checkDomain(domain,it)){
                     true -> println("$domain is blocked by $it")
                 }
             }
-            println("Done !")
         }
-
-
-        /// Cara 2 : Makan waktu sampe 108 detik
-//        dnsblList.toObservable()
-//                .filter { service.checkDomain(domain,it) }
-//                .subscribeBy (
-//                        onNext = { println(it) },
-////                        onError = { println(it.stackTrace) },
-//                        onComplete = { println("Done")}
-//                )
-
+        CompletableFuture.runAsync {
+            print("Done !")
+        }
     }
+
 }
