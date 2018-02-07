@@ -1,13 +1,28 @@
-# List Resource
+# Domain Checker
+Checking domain whether blocked by DNSBL or not. Support for Java and Kotlin.
 
-https://stackoverflow.com/questions/3584210/preferred-java-way-to-ping-an-http-url-for-availability#3584332
+## Prerequisites:
+- Java JDK
+- Apache Maven 
 
-http://smashinghub.com/10-excellent-website-to-check-a-site-down-or-blocked.htm
+## Install
+Because this project not pushed to any public maven repos, you should install it first locally
+```bash
+    mvn clean install
+```
 
-
-- http://www.checksite.us
-- http://downforeveryoneorjustme.com/
-- http://isdownorblocked.com/ 
-- http://isup.me/
-- http://just-ping.com/ 
-- http://www.watchmouse.com/en/ (Mati)
+add this project as dependency of your project
+```xml
+    <dependency>
+        <groupId>com.ciazhar</groupId>
+          <artifactId>domain-checker</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+```
+## Usage
+### Java / Kotlin
+Add this line of code 
+```kotlin
+    DomainChecker.check("domain.you.want.to.check")
+```
+If you execute the program, it will print in your Command Line Interface (Terminal/CMD) whether the domain is blocked or not.
