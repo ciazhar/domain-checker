@@ -2,7 +2,8 @@ package com.ciazhar.domainchecker
 
 
 import com.ciazhar.domainchecker.service.DomainCheckerServiceImpl
-import java.util.concurrent.CompletableFuture
+import rx.Observable
+import rx.schedulers.Schedulers
 
 /**
  * Created by ciazhar on 05/02/18.
@@ -103,16 +104,27 @@ object DomainChecker {
 
         println("Start Checking $domain ...")
         println("Please wait for some seconds ...")
-        dnsblList.forEach {
-            CompletableFuture.runAsync {
-                when(service.checkDomain(domain,it)){
-                    true -> println("$domain is blocked by $it")
-                }
-            }
-        }
-        CompletableFuture.runAsync {
-            println("Done !")
-        }
+
+        /// Cara 1
+        Observable.from(dnsblList).observeOn(Schedulers.io()) .map{
+            service.checkDomain(domain,it)
+        }.doOnNext{
+            println("$domain is blocked by $it")
+        }.doOnCompleted {
+            println("Done")
+        }.subscribe()
+
+        /// Cara 2
+//        dnsblList.forEach {
+//            CompletableFuture.runAsync {
+//                when(service.checkDomain(domain,it)){
+//                    true -> println("$domain is blocked by $it")
+//                }
+//            }
+//        }
+//        CompletableFuture.runAsync {
+//            println("Done !")
+//        }
     }
 
 }
