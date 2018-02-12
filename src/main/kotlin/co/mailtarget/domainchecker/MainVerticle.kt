@@ -1,4 +1,4 @@
-package com.ciazhar.domainchecker
+package co.mailtarget.domainchecker
 
 import io.vertx.core.AbstractVerticle
 

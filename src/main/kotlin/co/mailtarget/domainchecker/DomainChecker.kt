@@ -1,7 +1,7 @@
-package com.ciazhar.domainchecker
+package co.mailtarget.domainchecker
 
 
-import com.ciazhar.domainchecker.service.DomainCheckerServiceImpl
+import co.mailtarget.domainchecker.service.DomainCheckerServiceImpl
 import rx.Observable
 import rx.schedulers.Schedulers
 

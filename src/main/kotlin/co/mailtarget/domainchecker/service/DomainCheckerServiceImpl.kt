@@ -1,4 +1,4 @@
-package com.ciazhar.domainchecker.service
+package co.mailtarget.domainchecker.service
 
 import org.xbill.DNS.*
 

@@ -1,4 +1,4 @@
-package com.ciazhar.domainchecker.service
+package co.mailtarget.domainchecker.service
 
 /**
  * Created by ciazhar on 05/02/18.
