@@ -12,7 +12,7 @@
   <name>domain-checker</name>
 
   <properties>
-    <main.verticle>com.ciazhar.domainchecker.MainVerticle</main.verticle>
+    <main.verticle>co.mailtarget.domainchecker.MainVerticle</main.verticle>
       <kotlin.version>1.2.21</kotlin.version>
   </properties>
 
