@@ -2,8 +2,22 @@ package com.ciazhar.domainchecker
 
 
 import com.ciazhar.domainchecker.service.DomainCheckerServiceImpl
+import javafx.collections.ObservableList
 import rx.Observable
+import rx.observables.AsyncOnSubscribe
 import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
+import java.util.concurrent.CompletableFuture
+import kotlin.properties.Delegates
+import java.util.Arrays
+import java.util.concurrent.Executors
+import java.util.concurrent.ExecutorService
+import rx.plugins.RxJavaHooks.onError
+import rx.Subscriber
+
+
+
+
 
 /**
  * Created by ciazhar on 05/02/18.
@@ -13,7 +27,7 @@ object DomainChecker {
     private val service by lazy { DomainCheckerServiceImpl() }
 
     @JvmStatic
-    fun check(domain : String){
+    fun check(domain : String) : MutableList<String> {
 
         val dnsblList = listOf(
                 "aspews.ext.sorbs.net",
@@ -105,26 +119,130 @@ object DomainChecker {
         println("Start Checking $domain ...")
         println("Please wait for some seconds ...")
 
+        val blockedList = mutableListOf<String>()
+
         /// Cara 1
-        Observable.from(dnsblList).observeOn(Schedulers.io()) .map{
+        Observable.from(dnsblList).observeOn(Schedulers.io()).filter{
             service.checkDomain(domain,it)
         }.doOnNext{
-            println("$domain is blocked by $it")
+            blockedList.add(it)
         }.doOnCompleted {
             println("Done")
-        }.subscribe()
+        }.toBlocking().subscribe()
 
+//        val blockedList: MutableList<String> = mutableListOf()
+//
         /// Cara 2
 //        dnsblList.forEach {
-//            CompletableFuture.runAsync {
-//                when(service.checkDomain(domain,it)){
-//                    true -> println("$domain is blocked by $it")
+//            when(service.checkDomain(domain,it)){
+//                true -> {
+//                    blockedList.add(it)
 //                }
 //            }
 //        }
-//        CompletableFuture.runAsync {
-//            println("Done !")
-//        }
+//        println("Done !")
+
+        return blockedList
     }
 
+    @JvmStatic
+    fun checkWithObservable(domain : String) : Observable<List<String>> {
+
+        val dnsblList = listOf(
+                "aspews.ext.sorbs.net",
+                "b.barracudacentral.org",
+                "bad.psky.me",
+                "bl.deadbeef.com",
+                "bl.emailbasura.org",
+                "bl.mailspike.net",
+                "bl.score.senderscore.com",
+                "bl.spamcannibal.org",
+                "bl.spameatingmonkey.net",
+                "bl.spamcop.net",
+                "blackholes.five-ten-sg.com",
+                "blacklist.woody.ch",
+                "bogons.cymru.com",
+                "cbl.abuseat.org",
+                "cdl.anti-spam.org.cn",
+                "combined.abuse.ch",
+                "combined.rbl.msrbl.net",
+                "db.wpbl.info",
+                "dnsbl-1.uceprotect.net",
+                "dnsbl-2.uceprotect.net",
+                "dnsbl-3.uceprotect.net",
+                "dnsbl.ahbl.org",
+                "dnsbl.cyberlogic.net",
+                "dnsbl.inps.de",
+                "dnsbl.njabl.org",
+                "dnsbl.sorbs.net",
+                "drone.abuse.ch",
+                "duinv.aupads.org",
+                "dul.dnsbl.sorbs.net",
+                "dul.ru",
+                "dyna.spamrats.com",
+                "dynip.rothen.com",
+                "http.dnsbl.sorbs.net",
+                "images.rbl.msrbl.net",
+                "ips.backscatterer.org",
+                "ix.dnsbl.manitu.net",
+                "korea.services.net",
+                "misc.dnsbl.sorbs.net",
+                "noptr.spamrats.com",
+                "ohps.dnsbl.net.au",
+                "omrs.dnsbl.net.au",
+                "orvedb.aupads.org",
+                "osps.dnsbl.net.au",
+                "osrs.dnsbl.net.au",
+                "owfs.dnsbl.net.au",
+                "owps.dnsbl.net.au",
+                "pbl.spamhaus.org",
+                "phishing.rbl.msrbl.net",
+                "probes.dnsbl.net.au",
+                "proxy.bl.gweep.ca",
+                "proxy.block.transip.nl",
+                "psbl.surriel.com",
+                "rbl.interserver.net",
+                "rdts.dnsbl.net.au",
+                "relays.bl.gweep.ca",
+                "relays.bl.kundenserver.de",
+                "relays.nether.net",
+                "residential.block.transip.nl",
+                "ricn.dnsbl.net.au",
+                "rmst.dnsbl.net.au",
+                "sbl.spamhaus.org",
+                "short.rbl.jp",
+                "smtp.dnsbl.sorbs.net",
+                "socks.dnsbl.sorbs.net",
+                "spam.abuse.ch",
+                "spam.dnsbl.sorbs.net",
+                "spam.rbl.msrbl.net",
+                "spam.spamrats.com",
+                "spamlist.or.kr",
+                "spamrbl.imp.ch",
+                "t3direct.dnsbl.net.au",
+                "tor.ahbl.org",
+                "tor.dnsbl.sectoor.de",
+                "torserver.tor.dnsbl.sectoor.de",
+                "ubl.lashback.com",
+                "ubl.unsubscore.com",
+                "virbl.bit.nl",
+                "virus.rbl.jp",
+                "virus.rbl.msrbl.net",
+                "web.dnsbl.sorbs.net",
+                "wormrbl.imp.ch",
+                "xbl.spamhaus.org",
+                "zen.spamhaus.org",
+                "zombie.dnsbl.sorbs.net"
+        )
+
+        println("Start Checking $domain ...")
+        println("Please wait for some seconds ...")
+
+
+//        return Observable<List<String>>{
+//
+//        }
+
+        return Observable.never()
+    }
 }

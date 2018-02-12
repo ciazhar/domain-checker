@@ -6,7 +6,8 @@ class MainVerticle : AbstractVerticle() {
 
     override fun start() {
 
-        DomainChecker.check("youngontop.com")
+        val domainUWantToCheck = "youngontop.com"
+        println("$domainUWantToCheck is blocked by : "+ DomainChecker.check(domainUWantToCheck))
 
     }
 }
