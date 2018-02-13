@@ -153,4 +153,20 @@ object DomainChecker {
         return domainIsBlocking
     }
 
+    @JvmStatic
+    fun subscribe(domain : String) : Observable<MutableList<String>> {
+
+        println("Start Checking $domain ...")
+        println("Please wait for some seconds ...")
+
+        return Observable.from(dnsblList).subscribeOn(Schedulers.newThread()).filter{
+            service.checkDomain(domain,it)
+        }.doOnEach{
+            print(".")
+        }.doOnCompleted {
+            println("\nDone")
+        }.toList()
+
+    }
+
 }
