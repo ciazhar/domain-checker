@@ -13,7 +13,7 @@ import rx.schedulers.Schedulers
 object DomainChecker {
     private val service by lazy { DomainCheckerServiceImpl() }
 
-    val dnsblList = listOf(
+    val dnsblList = mutableListOf<String>(
             "aspews.ext.sorbs.net",
             "b.barracudacentral.org",
             "bad.psky.me",
@@ -105,6 +105,29 @@ object DomainChecker {
 
         println("Start Checking $domain ...")
         println("Please wait for some seconds ...")
+
+        val blockedList = mutableListOf<String>()
+
+        Observable.from(dnsblList).observeOn(Schedulers.newThread()).filter{
+            service.checkDomain(domain,it)
+        }.doOnNext{
+            blockedList.add(it)
+        }.doOnCompleted {
+            println("Done")
+        }.toBlocking().subscribe()
+
+        return blockedList
+    }
+
+    @JvmStatic
+    fun check(domain : String, newDnsblList : MutableList<String>) : MutableList<String> {
+
+        println("Start Checking $domain ...")
+        println("Please wait for some seconds ...")
+
+        newDnsblList.forEach {
+            dnsblList.add(it)
+        }
 
         val blockedList = mutableListOf<String>()
 
