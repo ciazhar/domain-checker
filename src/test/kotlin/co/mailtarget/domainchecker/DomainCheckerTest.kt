@@ -17,13 +17,8 @@ class DomainCheckerTest {
     }
 
     @Test
-    fun checkDomainReturnListMustNotNullTest() {
-        val listResult = checkDomainReturnList(domainYouWantToCheck)
-        Assert.assertNotNull(listResult)
-    }
-
-    @Test
     fun printCheckDomainReturnListTest(){
+        println("Running printCheckDomainReturnListTest ...")
         val listResult = checkDomainReturnList(domainYouWantToCheck)
         println(listResult)
     }
@@ -33,17 +28,15 @@ class DomainCheckerTest {
     }
 
     @Test
-    fun checkDomainReturnObservableMustNotNullTest() {
-        val observableResult = checkDomainReturnObservable(domainYouWantToCheck)
-        Assert.assertNotNull(observableResult)
-    }
-
-    @Test
     fun printCheckDomainReturnObservableTest(){
+        println("Running printCheckDomainReturnObservableTest ...")
         val observableResult = checkDomainReturnObservable(domainYouWantToCheck)
-//        val listResult = mutableListOf<String>()
         observableResult.subscribe()
-//        println(listResult)
+        observableResult.forEach {
+            it.forEach {
+                println("$domainYouWantToCheck is blocked by $it")
+            }
+        }
     }
 
 }
