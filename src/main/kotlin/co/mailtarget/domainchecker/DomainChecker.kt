@@ -1,10 +1,8 @@
 package co.mailtarget.domainchecker
 
-
 import co.mailtarget.domainchecker.service.DomainCheckerServiceImpl
 import rx.Observable
 import rx.schedulers.Schedulers
-
 
 /**
  * Created by ciazhar on 05/02/18.
@@ -13,7 +11,7 @@ import rx.schedulers.Schedulers
 object DomainChecker {
     private val service by lazy { DomainCheckerServiceImpl() }
 
-    val dnsblList = mutableListOf<String>(
+    val dnsblList = mutableListOf(
             "aspews.ext.sorbs.net",
             "b.barracudacentral.org",
             "bad.psky.me",
@@ -60,7 +58,6 @@ object DomainChecker {
             "osrs.dnsbl.net.au",
             "owfs.dnsbl.net.au",
             "owps.dnsbl.net.au",
-            "pbl.spamhaus.org",
             "phishing.rbl.msrbl.net",
             "probes.dnsbl.net.au",
             "proxy.bl.gweep.ca",
@@ -74,7 +71,6 @@ object DomainChecker {
             "residential.block.transip.nl",
             "ricn.dnsbl.net.au",
             "rmst.dnsbl.net.au",
-            "sbl.spamhaus.org",
             "short.rbl.jp",
             "smtp.dnsbl.sorbs.net",
             "socks.dnsbl.sorbs.net",
@@ -95,23 +91,24 @@ object DomainChecker {
             "virus.rbl.msrbl.net",
             "web.dnsbl.sorbs.net",
             "wormrbl.imp.ch",
-            "xbl.spamhaus.org",
             "zen.spamhaus.org",
             "zombie.dnsbl.sorbs.net"
     )
 
     @JvmStatic
-    fun check(domain : String) : MutableList<String> {
+    fun check(domain: String): MutableList<String> {
 
         println("Start Checking $domain ...")
         println("Please wait for some seconds ...")
 
         val blockedList = mutableListOf<String>()
 
-        Observable.from(dnsblList).observeOn(Schedulers.newThread()).filter{
-            service.checkDomain(domain,it)
-        }.doOnNext{
-            blockedList.add(it)
+        Observable.from(dnsblList).subscribeOn(Schedulers.newThread()).flatMap { dnsbl ->
+            service.checkDomain(domain, dnsbl).map { it to dnsbl }
+        }.filter {
+            it.first
+        }.map {
+            blockedList.add(it.second)
         }.doOnCompleted {
             println("Done")
         }.toBlocking().subscribe()
@@ -120,76 +117,25 @@ object DomainChecker {
     }
 
     @JvmStatic
-    fun check(domain : String, newDnsblList : MutableList<String>) : MutableList<String> {
+    fun check(domain: String, newDnsblList: MutableList<String>): MutableList<String> {
 
         println("Start Checking $domain ...")
         println("Please wait for some seconds ...")
 
-        newDnsblList.forEach {
-            dnsblList.add(it)
-        }
+        dnsblList.addAll(newDnsblList)
 
         val blockedList = mutableListOf<String>()
 
-        Observable.from(dnsblList).observeOn(Schedulers.newThread()).filter{
-            service.checkDomain(domain,it)
-        }.doOnNext{
-            blockedList.add(it)
+        Observable.from(dnsblList).flatMap { dnsbl ->
+            service.checkDomain(domain, dnsbl).map { it to dnsbl }
+        }.filter {
+            it.first
+        }.map {
+            blockedList.add(it.second)
         }.doOnCompleted {
             println("Done")
         }.toBlocking().subscribe()
 
         return blockedList
     }
-
-    @JvmStatic
-    fun check2(domain : String) : MutableList<String> {
-
-        println("Start Checking $domain ...")
-        println("Please wait for some seconds ...")
-
-        val domainIsBlocking = mutableListOf<String>()
-
-        dnsblList.forEach {
-            when(service.checkDomain(domain,it)){
-                true -> {
-                    domainIsBlocking.add(it)
-                }
-            }
-        }
-        println("Done !")
-        return domainIsBlocking
-    }
-
-    @JvmStatic
-    fun check3(domain : String) : MutableList<String> {
-
-        println("Start Checking $domain ...")
-        println("Please wait for some seconds ...")
-
-        val domainIsBlocking = mutableListOf<String>()
-
-        dnsblList.asSequence()
-                .filter { service.checkDomain(domain,it) }
-                .mapTo(domainIsBlocking){ it }
-
-        return domainIsBlocking
-    }
-
-    @JvmStatic
-    fun subscribe(domain : String) : Observable<MutableList<String>> {
-
-        println("Start Checking $domain ...")
-        println("Please wait for some seconds ...")
-
-        return Observable.from(dnsblList).subscribeOn(Schedulers.newThread()).filter{
-            service.checkDomain(domain,it)
-        }.doOnEach{
-            print(".")
-        }.doOnCompleted {
-            println("\nDone")
-        }.toList()
-
-    }
-
 }
