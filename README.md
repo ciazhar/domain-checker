@@ -1,5 +1,5 @@
 # Domain Checker
-Checking domain whether blocked by DNSBL or not. Support for Java and Kotlin.
+Checking domain whether blocked by DNSBL or not, using dnsjava and rxjava. Support for Java and Kotlin.
 
 ## Prerequisites:
 - Java JDK
