@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class DomainCheckerTest {
 
-    private val domainYouWantToCheck = "bitcoin.co.id"
+    private val domainYouWantToCheck = "mailtarget.co"
 
     private fun checkDomainReturnList(domain: String): MutableList<String> {
         return DomainChecker.check(domain)
@@ -19,6 +19,6 @@ class DomainCheckerTest {
         println("Running printCheckDomainReturnListTest ...")
         val listResult = checkDomainReturnList(domainYouWantToCheck)
         println(listResult)
-        assert(listResult.isNotEmpty())
+        assert(listResult.isEmpty())
     }
 }
