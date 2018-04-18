@@ -16,7 +16,15 @@ class DomainCheckerServiceImpl : DomainCheckerService {
             Observable.just(it).subscribeOn(Schedulers.newThread()).map {
                 var result = false
                 it as ARecord
-                val ip = it.address.hostAddress
+                val ip = if(dnsbl == "zen.spamhaus.org"){
+                    reverseIp(it.address.hostAddress)
+                }else{
+                    it.address.hostAddress
+                }
+
+                println("ip : $ip")
+                println("dnsbl : $dnsbl")
+                println("---------------")
 
                 val lookup2 = Lookup(ip + "." + dnsbl, Type.TXT)
                 val resolver = SimpleResolver()
@@ -40,5 +48,9 @@ class DomainCheckerServiceImpl : DomainCheckerService {
         }.toList().map {
             return@map !it.joinToString().contains("false")
         }
+    }
+
+    private fun reverseIp(content: String) : String {
+        return content.split(".").reversed().joinToString(".")
     }
 }
