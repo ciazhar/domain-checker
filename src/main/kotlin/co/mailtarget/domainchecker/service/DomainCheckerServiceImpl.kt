@@ -16,21 +16,14 @@ class DomainCheckerServiceImpl : DomainCheckerService {
             Observable.just(it).subscribeOn(Schedulers.newThread()).map {
                 var result = false
                 it as ARecord
-                val ip = if(dnsbl == "zen.spamhaus.org"){
-                    reverseIp(it.address.hostAddress)
-                }else{
-                    it.address.hostAddress
-                }
-
-                println("ip : $ip")
-                println("dnsbl : $dnsbl")
-                println("---------------")
-
-                val lookup2 = Lookup(ip + "." + dnsbl, Type.TXT)
+                val ip = reverseIp(it.address.hostAddress)
+                val lookup2 = Lookup("$ip.$dnsbl", Type.TXT)
                 val resolver = SimpleResolver()
                 lookup2.setResolver(resolver)
                 lookup2.setCache(null)
                 lookup2.run()
+
+                println("check $domain on $dnsbl. Lookup $ip.$dnsbl. Result ${lookup2.errorString}")
 
                 ///blocked
                 if (lookup2.result == Lookup.SUCCESSFUL) {
