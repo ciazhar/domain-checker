@@ -91,6 +91,7 @@ object DomainChecker {
             "virus.rbl.msrbl.net",
             "web.dnsbl.sorbs.net",
             "wormrbl.imp.ch",
+            "xbl.spamhaus.org",
             "zen.spamhaus.org",
             "zombie.dnsbl.sorbs.net"
     )
