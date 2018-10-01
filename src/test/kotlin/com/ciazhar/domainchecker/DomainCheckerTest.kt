@@ -1,4 +1,4 @@
-package co.mailtarget.domainchecker
+package com.ciazhar.domainchecker
 
 import org.junit.Test
 

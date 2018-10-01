@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>co.mailtarget.domainchecker</groupId>
+  <groupId>com.ciazhar.domainchecker</groupId>
   <artifactId>domain-checker</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
